@@ -9,6 +9,8 @@ Record every completed paper ingestion and meaningful library maintenance as a d
 - `E:/parper` is the paper-data repository. Commit papers, feature cards, analyses, extracted text, `INDEX.md`, and `index.json` here.
 - The skill source repository is `C:/Users/df789/.workbuddy/skills/paper-library`. Commit changes to skill behavior separately there.
 - The installed skill at `C:/Users/df789/.codex/skills/paper-library` is synchronized from the source and normally has no `.git` directory.
+- PDF originals in `E:/parper` are managed by Git LFS through `.gitattributes`; Git stores pointer files in history and actual PDF bytes in the local LFS object store.
+- Never bypass or remove the LFS filter for `*.pdf`.
 - Never push to a remote unless the user explicitly asks.
 
 ## When to Commit
@@ -19,6 +21,7 @@ Commit only after all of these are true:
 2. `python scripts/library.py reindex` completed successfully.
 3. `git status --porcelain` shows an actual change in the scoped paths.
 4. `git diff --check` reports no whitespace error.
+5. `git lfs install` has been run and PDF paths resolve to the LFS filter.
 
 Do not commit after read-only retrieval or search. Do not create an empty commit.
 
@@ -37,7 +40,7 @@ git commit -m "paper-library: ingest $PaperId"
 git log -1 --oneline
 ```
 
-The commit must include the whole new paper directory and both generated indexes.
+The commit must include the whole new paper directory and both generated indexes. `git add` converts matching PDFs to LFS objects automatically; never create or edit LFS pointer files by hand.
 
 ## Maintenance Commit
 
@@ -71,6 +74,7 @@ After committing, verify all of these:
 ```powershell
 git status --short
 git log -1 --oneline
+git lfs ls-files -s
 ```
 
-Expected result: the latest commit has the intended `paper-library:` message, and `git status --short` shows no unstaged scoped changes.
+Expected result: the latest commit has the intended `paper-library:` message, `git status --short` shows no unstaged scoped changes, and every newly ingested PDF appears with its LFS object ID.

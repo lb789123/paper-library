@@ -120,6 +120,7 @@ python <skill>/scripts/library.py list          # 看库里到底有哪些 tag
 触发：**入库完成、卡片/深度分析修改完成且 `reindex` 成功之后**。只读检索不触发提交。
 
 - 论文数据只在 `E:/parper` 仓库提交；skill 自身改动在 skill 源码仓库单独提交。
+- 论文 PDF 由 Git LFS 管理；`.gitattributes` 会在 `git add` 时自动把 PDF 转成 LFS 对象。
 - 提交前确认 scoped `git status` 有实际变化，并运行 `git diff --check`。
 - 不使用 `git add -A`；只添加本次论文目录或明确文件，以及 `INDEX.md` / `index.json`。
 - 完整命令、维护场景和失败处理见 `references/git-workflow.md`。
@@ -168,7 +169,7 @@ paper-library/
    需要重写时先备份再手工改，不要用 `--force` 冲掉别人的分析。
 4. **检索优先于生成**：库里已有时，先引用再补充，不要在回答里重新推导一遍已有结论。
 5. **`reuse_when` 是给未来的自己看的**，写"什么时候该翻回这篇"，而不是复述论文内容。
-6. **Git 提交有边界**：只在入库或维护完成且 `reindex` 成功后提交；不提交空历史；不使用 `git add -A`。
+6. **Git 提交有边界**：只在入库或维护完成且 `reindex` 成功后提交；不提交空历史；不使用 `git add -A`；PDF 不得绕过 Git LFS。
 
 ## Resources
 
