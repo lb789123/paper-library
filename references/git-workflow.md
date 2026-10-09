@@ -11,6 +11,7 @@ Record every completed paper ingestion and meaningful library maintenance as a d
 - The installed skill at `C:/Users/df789/.codex/skills/paper-library` is synchronized from the source and normally has no `.git` directory.
 - PDF originals in `E:/parper` are managed by Git LFS through `.gitattributes`; Git stores pointer files in history and actual PDF bytes in the local LFS object store.
 - Never bypass or remove the LFS filter for `*.pdf`.
+- If migration or checkout leaves a PDF as a small pointer file, run `git lfs checkout` before reading or ingesting it; never treat a pointer file as the paper original.
 - Never push to a remote unless the user explicitly asks.
 
 ## When to Commit

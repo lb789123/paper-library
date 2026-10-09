@@ -121,6 +121,7 @@ python <skill>/scripts/library.py list          # 看库里到底有哪些 tag
 
 - 论文数据只在 `E:/parper` 仓库提交；skill 自身改动在 skill 源码仓库单独提交。
 - 论文 PDF 由 Git LFS 管理；`.gitattributes` 会在 `git add` 时自动把 PDF 转成 LFS 对象。
+- 若 checkout 后 PDF 变成小指针文件，先运行 `git lfs checkout` 恢复真实原文。
 - 提交前确认 scoped `git status` 有实际变化，并运行 `git diff --check`。
 - 不使用 `git add -A`；只添加本次论文目录或明确文件，以及 `INDEX.md` / `index.json`。
 - 完整命令、维护场景和失败处理见 `references/git-workflow.md`。
