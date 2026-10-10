@@ -1,6 +1,6 @@
 ---
 name: paper-library
-description: 维护并检索一个本地论文库（默认根目录 E:/parper）。用于把新论文 PDF 入库（建同名子目录、抽全文、生成"特性卡 + 深度分析"两份文档，并把核心思路/解决的问题/可复用场景提炼成结构化字段），以及在任何技术问题解答时把库里相关论文的特性当作参考依据。当用户说"把这篇论文加进库里 / 总结入库 / 读一下这个 PDF"，或说"库里有没有关于 X 的论文 / 我之前读过什么讲 Y 的"时使用；当用户提出 B-rep、CAD、网格、生成模型、表示学习等问题、而库里可能已有相关工作可引用时也应主动使用。不适用于一次性文献检索或联网查论文。
+description: 维护并检索一个本地论文库（默认根目录 E:/parper）。用于把新论文 PDF 入库（建同名子目录、抽全文、生成"特性卡 + 深度分析"两份文档，并把核心思路/解决的问题/可复用场景提炼成结构化字段），以及在任何技术问题解答时把库里相关论文的特性当作参考依据。当用户说"把这篇论文加进库里 / 总结入库 / 读一下这个 PDF"，或说"库里有没有关于 X 的论文 / 我之前读过什么讲 Y 的"时使用；当用户提出 B-rep、CAD、网格、生成模型、表示学习等问题、而库里可能已有相关工作可引用时也应主动使用。同时维护论文库的想法笔记层（`_notes/`，AI 起草 `draft: true`、用户背书后转正）：当用户说"把这个想法记下来""把这次检索的结论存成笔记""帮我对比库里 X 和 Y"时使用。不适用于一次性文献检索或联网查论文。
 agent_created: true
 ---
 
@@ -126,6 +126,20 @@ python <skill>/scripts/library.py list          # 看库里到底有哪些 tag
 - 不使用 `git add -A`；只添加本次论文目录或明确文件，以及 `INDEX.md` / `index.json`。
 - 完整命令、维护场景和失败处理见 `references/git-workflow.md`。
 
+## 工作流 E：想法笔记（Ideas）
+
+触发：「把这个想法记下来」「把这次检索的结论存成笔记」「帮我对比库里 X 和 Y」，
+或检索命中 ≥ 2 张卡、结论有跨论文价值时主动提议。
+
+完整协议见 `references/notes-protocol.md`。要点：
+
+- 笔记落盘到 `<库根>/_notes/`，文件名 `YYYY-MM-DD-<短名>.md`。`_` 前缀保证不进论文索引。
+- **AI 只写派生知识**（聚合、对比、检索留痕），**不替用户写真值判断**（决策、教训、口味）。
+- Agent 起草的笔记一律 `draft: true`；用户看过、改过、说"可以"之后才去掉。**不要自行转正。**
+- 笔记双链指回论文卡（`[[../<id>/README|<id>]]` 的 Obsidian 格式或直接相对路径），
+  正文中沿用检索协议的引用格式标注来源。
+- 不确定该不该记 → 先问用户，不要自作主张落盘。
+
 ## 目录结构
 
 **论文库**（用户数据，根目录见 `config.json`，默认 `E:/parper`）：
@@ -136,6 +150,7 @@ E:/parper/                        ← 论文库根
 ├── index.json                    ← 派生：结构化检索库
 ├── _inbox/                       ← 未入库的 PDF 先丢这里
 ├── _docs/                        ← 库自身的说明文档（不属于任何论文）
+├── _notes/                       ← 想法笔记层（AI 起草 draft，用户背书转正；见 references/notes-protocol.md）
 ├── <id>/                         ← 每篇论文一个目录，以论文名命名
 │   ├── README.md                 ← 特性卡（真值来源）
 │   ├── analysis.md               ← 深度分析
@@ -156,10 +171,13 @@ paper-library/
 ├── scripts/library.py            ← 确定性 I/O：scaffold / reindex / search / list / config / init
 ├── references/
 │   ├── feature-card-schema.md    ← 字段定义 + 取值规范（写卡前必读）
-│   └── retrieval-protocol.md     ← 三级检索协议 + 引用规范
+│   ├── retrieval-protocol.md     ← 三级检索协议 + 引用规范
+│   ├── notes-protocol.md         ← 想法笔记协议（写笔记前必读）
+│   └── git-workflow.md           ← Git 提交规则与命令
 └── assets/templates/
     ├── feature-card.md           ← README.md 正文模板（frontmatter 由脚本生成）
-    └── analysis.md               ← analysis.md 模板
+    ├── analysis.md               ← analysis.md 模板
+    └── note.md                   ← 想法笔记模板
 ```
 
 ## 硬规则
@@ -171,6 +189,7 @@ paper-library/
 4. **检索优先于生成**：库里已有时，先引用再补充，不要在回答里重新推导一遍已有结论。
 5. **`reuse_when` 是给未来的自己看的**，写"什么时候该翻回这篇"，而不是复述论文内容。
 6. **Git 提交有边界**：只在入库或维护完成且 `reindex` 成功后提交；不提交空历史；不使用 `git add -A`；PDF 不得绕过 Git LFS。
+7. **想法笔记不冒充真值**：Agent 起草的笔记必须 `draft: true`，未经用户背书不得转正；`_notes/` 不进索引，也不改论文卡内容。
 
 ## Resources
 
@@ -178,5 +197,6 @@ paper-library/
   `C:/Users/df789/.workbuddy/binaries/python/versions/3.13.12/python.exe`
 - `references/feature-card-schema.md` —— 写卡前读一遍，字段取值规范直接决定检索命中率
 - `references/retrieval-protocol.md` —— 回答问题要引用库里论文时读
+- `references/notes-protocol.md` —— 写想法笔记前读，类型、字段与 draft 流程
 - `references/git-workflow.md` —— 入库或维护完成后的 Git 提交规则与命令
 - `assets/templates/*.md` —— 由 `scaffold` 自动使用，一般不需手工打开
